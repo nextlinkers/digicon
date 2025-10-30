@@ -1,34 +1,34 @@
-Team_name,Name ,Reg_no,Team_no
-,,,
-DigiGOAL,K.Sumanth,9922005320,1
-DigiSpectre,Guraja Naga Radha Murali,9923005088,2
-DigiLayout,U Rushi Vardhan,9923005136,3
-DigiLogicX,MSD ISMAIL,9924005256,4
-DigiEra,T Pradeep Kumar,9922005156,5
-DigiWave,M DEEPAK,9923005311,6
-DigiVision,Gokul P,9924005178,7
-DigiWorld,Prabhu Balaji G R,9922005375,8
-DigiNetwork,Shaik.Sameerbasha,9924005386,9
-DigiSolutions,Jakkireddy Harshitha,9924005066,10
-DigiFlow,SURESHKUMAR S,9923005226,11
-DigiSmart,D.Masthan vali,9922005097,12
-DigiCraft,Mohedhaa Shri K,9923005209,13
-DigiMate,CHARAN TEJ U,99240040204,14
-DigiSpace,MAVILAPALLI MV HAREESWAR SARMA,9922005051,15
-DigiFusion,Maram Harshitha,9923005106,16
-DigiCloud,T Thavaseelan,9923005249,17
-DigiShift,Gudikati Bharath Kumar,9923005016,18
-DigiPulse,D Bernard Arthur,9923005236,19
-DigiGlobal,Dasireddy Meghana,9922005276,20
-DigiBridge,Guduru Anjan kumar reddy,9924005348,21
-DigiPatriots,Guruashokan G,9923005197,22
-DigiMatrix,S.Dileep,99220040721,23
-DigiVirtuosos,Mohamed Abrar S K,9923005255,24
-Digimasters,M Vishwak Sai,9923005157,25
-Digiconnect,Maram Harshitha,9923005106,26
-DigiEdge,S Rohith Kumar,9923005130,27
-DigiServe,S Viddeswararao,9922005070,28
-DigiInsight,YERRAMSETTY VEKASH,9823005018,29
-Digiwarriors,vaishnava dhanush D,9923005229,30
-Digicore,Harishkumaran V,9923005260,31
-DigiAnalyzer,Shirin Mary,9923005277,32
+Team_name,Name ,Reg_no,Team_no,Department
+,,,,
+DigiGOAL,K.Sumanth,9922005320,1,ECE
+DigiSpectre,Guraja Naga Radha Murali,9923005088,2,ECE
+DigiLayout,U Rushi Vardhan,9923005136,3,ECE
+DigiLogicX,MSD ISMAIL,9924005256,4,ECE
+DigiEra,T Pradeep Kumar,9922005156,5,ECE
+DigiWave,M DEEPAK,9923005311,6,ECE
+DigiVision,Gokul P,9924005178,7,ECE
+DigiWorld,Prabhu Balaji G R,9922005375,8,ECE
+DigiNetwork,Shaik.Sameerbasha,9924005386,9,ECE
+DigiSolutions,Jakkireddy Harshitha,9924005066,10,ECE
+DigiFlow,SURESHKUMAR S,9923005226,11,ECE
+DigiSmart,D.Masthan vali,9922005097,12,ECE
+DigiCraft,Mohedhaa Shri K,9923005209,13,ECE
+DigiMate,CHARAN TEJ U,99240040204,14,CSE
+DigiSpace,MAVILAPALLI MV HAREESWAR SARMA,9922005051,15,ECE
+DigiFusion,Maram Harshitha,9923005106,16,ECE
+DigiCloud,T Thavaseelan,9923005249,17,ECE
+DigiShift,Gudikati Bharath Kumar,9923005016,18,ECE
+DigiPulse,D Bernard Arthur,9923005236,19,ECE
+DigiGlobal,Dasireddy Meghana,9922005276,20,ECE
+DigiBridge,Guduru Anjan kumar reddy,9924005348,21,ECE
+DigiPatriots,Guruashokan G,9923005197,22,ECE
+DigiMatrix,S.Dileep,99220040721,23,CSE
+DigiVirtuosos,Mohamed Abrar S K,9923005255,24,ECE
+Digimasters,M Vishwak Sai,9923005157,25,ECE
+Digiconnect,Maram Harshitha,9923005106,26,ECE
+DigiEdge,S Rohith Kumar,9923005130,27,ECE
+DigiServe,S Viddeswararao,9922005070,28,ECE
+DigiInsight,YERRAMSETTY VEKASH,9823005018,29,ECE
+Digiwarriors,vaishnava dhanush D,9923005229,30,ECE
+Digicore,Harishkumaran V,9923005260,31,ECE
+DigiAnalyzer,Shirin Mary,9923005277,32,ECE
