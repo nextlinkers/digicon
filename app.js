@@ -125,7 +125,8 @@ function loadTeamsCSV() {
       teamNumber: findIdx(['teamnumber','regno','registrationno','regnumber','reg_no']),
       teamName: findIdx(['teamname','team_name','team']),
       teamLeader: findIdx(['teamleader','leader','name','studentname']),
-      teamNo: findIdx(['teamno','team_no','teamnumberdisplay','team_id'])
+      teamNo: findIdx(['teamno','team_no','teamnumberdisplay','team_id']),
+      department: findIdx(['department','dept'])
     };
     if (idx.teamNumber === -1 || idx.teamName === -1 || idx.teamLeader === -1) { teamNumberToTeam = new Map(); return; }
     const map = new Map();
@@ -137,8 +138,9 @@ function loadTeamsCSV() {
       const teamName = String(parts[idx.teamName] ?? '').trim();
       const teamLeader = String(parts[idx.teamLeader] ?? '').trim();
       const teamNo = idx.teamNo !== -1 ? String(parts[idx.teamNo] ?? '').trim() : '';
+      const department = idx.department !== -1 ? String(parts[idx.department] ?? '').trim() : '';
       if (!teamNumber) return;
-      map.set(teamNumber, { teamNumber, teamName, teamLeader, teamNo });
+      map.set(teamNumber, { teamNumber, teamName, teamLeader, teamNo, department });
     });
     teamNumberToTeam = map;
   } catch (_) { teamNumberToTeam = new Map(); }
@@ -306,7 +308,11 @@ app.post('/api/register', async (req, res) => {
       const updatedRegistrations = await db.getAllRegistrations();
       const enrichedRegs = updatedRegistrations.map(r => {
         const team = teamNumberToTeam.get(String(r.team_number || '').trim());
-        return { ...r, team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number };
+        return {
+          ...r,
+          team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number,
+          department: (team && team.department) ? team.department : r.department
+        };
       });
       const updatedProblems = formatProblems(await db.getAllProblemStatements());
       broadcastUpdate('registration', { registrations: enrichedRegs, problems: updatedProblems, newRegistration: { ...registration, problemStatement: ps } });
@@ -338,7 +344,11 @@ app.delete('/api/registration/:teamNumber', async (req, res) => {
       const updatedRegistrations = await db.getAllRegistrations();
       const enrichedRegs = updatedRegistrations.map(r => {
         const team = teamNumberToTeam.get(String(r.team_number || '').trim());
-        return { ...r, team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number };
+        return {
+          ...r,
+          team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number,
+          department: (team && team.department) ? team.department : r.department
+        };
       });
       const updatedProblems = formatProblems(await db.getAllProblemStatements());
       broadcastUpdate('deletion', { registrations: enrichedRegs, problems: updatedProblems, deletedTeamNumber: String(req.params.teamNumber).trim() });
@@ -357,7 +367,11 @@ app.post('/api/reset', async (req, res) => {
     const registrations = await db.getAllRegistrations();
     const enrichedRegs = registrations.map(r => {
       const team = teamNumberToTeam.get(String(r.team_number || '').trim());
-      return { ...r, team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number };
+      return {
+        ...r,
+        team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number,
+        department: (team && team.department) ? team.department : r.department
+      };
     });
     const problems = formatProblems(await db.getAllProblemStatements());
     broadcastUpdate('reset', { registrations: enrichedRegs, problems });
@@ -421,7 +435,11 @@ app.get('/api/registrations', async (req, res) => {
     const registrations = await db.getAllRegistrations();
     const enriched = registrations.map(r => {
       const team = teamNumberToTeam.get(String(r.team_number || '').trim());
-      return { ...r, team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number };
+      return {
+        ...r,
+        team_display_number: (team && team.teamNo) ? team.teamNo : r.team_number,
+        department: (team && team.department) ? team.department : r.department
+      };
     });
     res.json(enriched);
   } catch (error) {
