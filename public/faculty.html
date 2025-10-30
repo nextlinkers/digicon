@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Faculty Coordinator – DIGICON 3.0</title>
-  <link rel="icon" href="cybernerds.png">
+  <link rel="icon" href="digicon.png">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     body { margin:0; font-family: Verdana, Tahoma, sans-serif; background: linear-gradient(120deg, #0A0A0A 0%, #2B2B2B 70%, #0A0A0A 100%); color:#F5F5F5; min-height:100vh; display:flex; }
@@ -49,17 +49,16 @@
     <div class="login-card">
       <h3>Faculty Login</h3>
       <label for="fuser">User ID</label>
-      <input id="fuser" type="text" placeholder="VMNECE" />
+      <input id="fuser" type="text" placeholder="User ID" />
       <label for="fpass">Passcode</label>
-      <input id="fpass" type="password" placeholder="41300@ECE" />
+      <input id="fpass" type="password" placeholder="Passcode" />
       <button id="fLoginBtn">Login</button>
       <div id="fLoginMsg" class="muted" style="margin-top:8px;"></div>
     </div>
   </div>
   <aside class="sidebar">
     <div class="brand">
-      <img src="cybernerds.png" alt="Event" />
-      <img src="owaspLogo.png" alt="ACM" />
+      <img src="digicon.png" alt="DIGICON" />
       <div class="t">DIGICON 3.0 – Faculty</div>
     </div>
     <div class="menu">
@@ -75,7 +74,10 @@
   <main class="content">
     <div class="header">
       <div class="title">Faculty Coordinator Dashboard</div>
-      <div class="pill" id="now">Loading time…</div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div class="pill" id="now">Loading time…</div>
+        <button id="logoutBtn" class="pill" style="cursor:pointer; background:#C1121F; color:#fff; border:1px solid #C1121F;">Logout</button>
+      </div>
     </div>
 
     <section class="panel" data-view="dashboard">
@@ -234,7 +236,8 @@
       const p = (document.getElementById('fpass').value||'').trim();
       const msg = document.getElementById('fLoginMsg');
       if (!u || !p) { msg.textContent = 'Enter user ID and passcode'; return; }
-      if (!(u === 'VMNECE' && p === '41300@ECE')) { msg.textContent = 'Invalid credentials'; return; }
+      // Validate (server-side recommended); placeholder check removed from UI
+      if (!(u && p)) { msg.textContent = 'Invalid credentials'; return; }
       localStorage.setItem('facultyAuth','1');
       document.getElementById('loginOverlay').style.display = 'none';
       try {
@@ -331,6 +334,12 @@
 
     document.getElementById('sParticipants').addEventListener('input', () => renderParticipants(cacheTeams));
     document.getElementById('sMapping').addEventListener('input', () => renderMapping(cacheRegs));
+
+    // Logout handler
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('facultyAuth');
+      document.getElementById('loginOverlay').style.display = 'flex';
+    });
 
     ensureLogin();
     load();
