@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIGICON 3.0 - Mission Control</title>
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    .info-card {
+      background: #181818;
+      border: 2.5px solid #c10016;
+      border-radius: 32px;
+      box-shadow: 0 4px 24px #18181899;
+      padding: 36px 44px;
+      min-width: 220px;
+      max-width: 320px;
+      text-align: center;
+      color: #ededed;
+      font-size: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      .header {
+        font-size: 2rem;
+        padding: 20px 0 0 20px;
+        letter-spacing: 1px;
+      }
+      
+      .logo-x {
+        font-size: 1.5rem;
+        margin: 0 4px;
+      }
+      
+      .container {
+        padding: 20px;
+        gap: 20px;
+      }
+      
+      .info-card {
+        padding: 24px 28px;
+        min-width: 200px;
+        max-width: 280px;
+        font-size: 1rem;
+        border-radius: 24px;
+        margin-bottom: 20px;
+      }
+      
+      .cyber-btn {
+        font-size: 1rem;
+        padding: 12px 24px;
+        min-height: 48px;
+        width: 100%;
+        max-width: 250px;
+      }
+      
+      .footer {
+        padding: 20px;
+        font-size: 0.9rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        font-size: 1.6rem;
+        padding: 16px 0 0 16px;
+        letter-spacing: 0.5px;
+      }
+      
+      .logo-x {
+        font-size: 1.2rem;
+        margin: 0 2px;
+      }
+      
+      .container {
+        padding: 16px;
+        gap: 16px;
+      }
+      
+      .info-card {
+        padding: 20px 24px;
+        min-width: 180px;
+        max-width: 260px;
+        font-size: 0.95rem;
+        border-radius: 20px;
+        margin-bottom: 16px;
+      }
+      
+      .cyber-btn {
+        font-size: 0.95rem;
+        padding: 10px 20px;
+        min-height: 50px;
+        width: 100%;
+        max-width: 220px;
+      }
+      
+      .footer {
+        padding: 16px;
+        font-size: 0.85rem;
+      }
+    }
+    .logo-x {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #c10016;
+      margin: 0 8px;
+      user-select: none;
+    }
+    body {
+      background: linear-gradient(120deg, #0A0A0A 0%, #2B2B2B 70%, #C1121F 100%);
+      color: #F5F5F5;
+      font-family: Verdana, Tahoma, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      position: relative;
+    }
+    /* Background cinematic layers */
+    .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .bg-mask {
+      position: absolute; right: -6%; top: 8%; width: 520px; height: 520px;
+      background-image: url('mask.png'); background-size: contain; background-repeat: no-repeat; background-position: center;
+      opacity: 0.10; filter: grayscale(100%);
+      animation: floatSlow 12s ease-in-out infinite;
+    }
+    .bg-professor {
+      position: absolute; left: -4%; bottom: -2%; width: 520px; height: 520px;
+      background-image: url('professor.png'); background-size: contain; background-repeat: no-repeat; background-position: center;
+      opacity: 0.10; filter: grayscale(100%);
+      animation: floatSlow 14s ease-in-out -2s infinite;
+    }
+    @keyframes floatSlow { 0%,100%{ transform: translateY(0) scale(1); } 50%{ transform: translateY(-8px) scale(1.02); } }
+    .header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+      border-bottom: 1px solid #2B2B2B;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      height: 40px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px #000a);
+      animation: glitch 3s infinite;
+    }
+    .brand-title { font-family: Verdana, Tahoma, sans-serif; font-size: 1rem; letter-spacing: 0.5px; color: #D4AF37; font-weight: bold; }
+    .brand-accent { color: #C1121F; }
+    @keyframes glitch {
+      0%, 100% { transform: translate(0,0); filter: drop-shadow(0 0 0 #C1121F); }
+      20% { transform: translate(1px,-1px); }
+      40% { transform: translate(-1px,1px); }
+      60% { transform: translate(1px,1px); }
+      80% { transform: translate(-1px,-1px); }
+    }
+    .main-title {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      color: #D4AF37;
+      font-family: Verdana, Tahoma, sans-serif;
+      text-align: center;
+      text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+      padding: 6px 12px;
+      text-shadow: 0 0 32px #C1121F, 0 0 14px #0A0A0A;
+    }
+    .main-title::before {
+      content: '';
+      position: absolute; inset: -6px -10px;
+      background: radial-gradient(220px 90px at 50% 50%, rgba(212,175,55,0.10), transparent 70%);
+      border-radius: 14px;
+      box-shadow: 0 0 0 1px rgba(193,18,31,0.3), 0 10px 24px rgba(193,18,31,0.18);
+      z-index: -1;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+    @keyframes pulseGlow { 0%,100%{ opacity: 0.85; } 50%{ opacity: 0.55; } }
+    .subtitle {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 8px;
+      text-align: center;
+      font-weight: 600;
+      font-family: Verdana, Tahoma, sans-serif;
+    }
+    .desc { font-size: 0.95rem; color: #F5F5F5; margin-bottom: 24px; text-align: center; max-width: 760px; margin-left: auto; margin-right: auto; background: rgba(42,42,42,0.62); border: 1px solid #222; border-radius: 10px; padding: 14px 20px; box-shadow: 0 4px 14px rgba(193,18,31,0.08); }
+    .main-btn { margin: 20px 0 28px 0; border-radius: 10px; background: #C1121F; color: #fff; border: 1px solid #C1121F; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 8px 18px rgba(193,18,31,0.22); transition: transform 0.15s ease, box-shadow 0.2s, background 0.2s; font-size: 1rem; padding: 12px 26px; font-family: Verdana, Tahoma, sans-serif; outline: none; position: relative; }
+    .main-btn:hover { background: #a50f19; box-shadow: 0 10px 24px rgba(193,18,31,0.34); transform: translateY(-1px); }
+    .timer { margin-top: 6px; font-family: Verdana, Tahoma, sans-serif; font-size: 0.95rem; letter-spacing: 1px; color: #D4AF37; text-align: center; }
+    .laser-strip { height: 2px; width: 100%; background: linear-gradient(90deg, transparent, #C1121F 50%, transparent); box-shadow: 0 0 8px #D4AF37; margin: 12px 0 6px 0; border-radius:1px; }
+    @keyframes sweep { from { background-position: 0 0; } to { background-position: 200% 0; } }
+    .red { color: #c10016; }
+    .black { color: #181818; }
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .tag-list {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      background: #181818;
+      color: #ededed;
+      border-radius: 18px;
+      padding: 10px 28px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 8px #18181844;
+    }
+    .main-title {
+      font-size: 5rem;
+      font-family: 'Vina Sans', 'Vollkorn', Arial, sans-serif;
+      background: linear-gradient(95deg, #c10016 30%, #181818 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-shadow: 0 5px 16px #18181833, 0 0 44px #c1001699;
+      text-align: center;
+      margin-bottom: 5px;
+      margin-top: 10px;
+      text-transform: uppercase;
+      line-height: 1.05;
+    }
+    .subtitle {
+      font-family: 'Vina Sans', Arial, sans-serif;
+      font-size: 2.2rem;
+      color: #c10016;
+      margin-bottom: 18px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 700;
+      text-shadow: 0 1px 9px #00000055;
+    }
+    .desc {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 1.25rem;
+      color: #fff;
+      background: rgba(51,20,32,0.7);
+      border-radius: 9px;
+      box-shadow: 0 0 24px #c1001630,0 4px 16px #000c;
+      margin:0 auto 28px auto;
+      text-align: center;
+      padding: 1.2em 2.2em;
+    }
+    .main-btn {
+      margin: 24px 0 32px 0;
+      border-radius: 10px;
+      background: #c10016;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #18181844;
+      transition: background 0.2s;
+      font-size: 1.2rem;
+      padding: 16px 38px;
+      font-family: 'Roboto', Arial, sans-serif;
+      outline: none;
+    }
+    .main-btn:hover {
+      background: #232323;
+      color: #fff;
+    }
+    .info-cards {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .logo-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      margin-bottom: 16px;
+      padding: 0 16px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .logo-bar img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      max-width: 45%;
+      background: none;
+      filter: drop-shadow(0 2px 8px #18181844);
+    }
+    
+    .logo-bar img[alt="Evercode Logo"] {
+      height: 80px;
+      width: 180px;
+      object-fit: contain;
+    }
+    .logo-x {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 0 8px;
+      user-select: none;
+      color: #c10016;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .info-label {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #c10016;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-value {
+      font-size: 1.18rem;
+      color: #ededed;
+      font-weight: 500;
+    }
+    @media (max-width: 900px) {
+      .main-title { font-size: 2.6rem; }
+      .main { padding: 0 12px; }
+      .info-cards { gap: 16px; }
+      .info-card { min-width: 140px; padding: 16px 12px; }
+      .header { font-size: 1.6rem; padding-left: 16px; }
+      .logo-bar img { height: 36px; max-width: 40%; }
+      .logo-bar img[alt="Evercode Logo"] { height: 70px; width: 160px; }
+    }
+
+    @media (max-width: 600px) {
+      .main-title { font-size: 2.2rem; }
+      .subtitle { font-size: 1.1rem; }
+      .desc { font-size: 1rem; padding: 0 8px; }
+      .logo-bar { gap: 6px; padding: 0 12px; }
+      .logo-bar img { height: 32px; max-width: 48%; }
+      .logo-bar img[alt="Evercode Logo"] { height: 60px; width: 140px; }
+      .main-btn { width: 100%; max-width: 280px; }
+    }
+
+    .site-footer {
+      position: relative;
+      margin-top: 32px;
+      width: 100%;
+      padding: 14px 16px;
+      text-align: center;
+      background: #0A0A0A;
+      color: #F5F5F5;
+      font-size: 0.92rem;
+      border-top: 1px solid rgba(193,18,31,0.35);
+      box-shadow: 0 -6px 22px rgba(193,18,31,0.12) inset;
+      letter-spacing: 0.4px;
+    }
+    .site-footer span {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(43,43,43,0.6);
+      border: 1px solid rgba(212,175,55,0.2);
+      box-shadow: 0 0 0 1px rgba(43,43,43,0.6) inset, 0 4px 14px rgba(0,0,0,0.35);
+    }
+    .site-footer .brand { color: #D4AF37; font-weight: 700; }
+    .site-footer:hover .brand { text-shadow: 0 0 12px rgba(212,175,55,0.45); }
+
+    /* Modal Styles */
+    .cyber-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(24,24,24,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .cyber-modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .cyber-modal-content {
+      background: #fff;
+      border: 2px solid #c10016;
+      border-radius: 18px;
+      box-shadow: 0 8px 40px #18181888;
+      padding: 36px 44px 28px 44px;
+      color: #181818;
+      text-align: left;
+      min-width: 340px;
+      max-width: 95vw;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+    .cyber-modal-content h3 {
+      margin: 0 0 18px 0;
+      font-size: 1.4rem;
+      color: #c10016;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .cyber-modal-btns {
+      margin-top: 18px;
+      display: flex;
+      gap: 18px;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    .cyber-modal-btn {
+      background: #c10016;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.08rem;
+      padding: 8px 28px;
+      cursor: pointer;
+      box-shadow: 0 0 8px #18181844;
+      transition: background 0.2s;
+    }
+    .cyber-modal-btn:hover {
+      background: #181818;
+      color: #fff;
+      border: 2px solid #c10016;
+    }
+
+    /* Evaluation Criteria Styles */
+    .criteria-section {
+      margin-bottom: 24px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #c10016;
+    }
+    .criteria-section h3 {
+      color: #c10016;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .criteria-section h4 {
+      color: #181818;
+      font-size: 1.1rem;
+      margin: 16px 0 8px 0;
+      font-weight: 600;
+    }
+    .criteria-section ul {
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+    .criteria-section li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+      color: #333;
+    }
+    .criteria-item {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .criteria-item .criteria-name {
+      font-weight: 600;
+      color: #c10016;
+      flex: 1;
+    }
+    .criteria-item .criteria-weight {
+      background: #c10016;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-left: 12px;
+      min-width: 60px;
+      text-align: center;
+    }
+    .criteria-item .criteria-description {
+      color: #666;
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    /* Rubrics static tables */
+    .rubrics { color: #111; }
+    .rubrics h2 { margin: 0 0 8px 0; font-size: 1.6rem; color: #c10016; text-align: center; }
+    .rubrics h3 { margin: 18px 0 10px 0; font-size: 1.25rem; color: #111; }
+    .rubrics p { margin: 6px 0 14px 0; color: #333; }
+    .rubric-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 18px 0;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .rubric-table th, .rubric-table td {
+      border: 1px solid #e5e5e5;
+      padding: 10px 12px;
+      vertical-align: top;
+      text-align: left;
+    }
+    .rubric-table thead th {
+      background: #c10016;
+      color: #fff;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .rubric-table tbody tr:nth-child(odd) { background: #fafafa; }
+    .rubrics .phase-note { font-size: 0.95rem; color: #444; margin-top: -6px; margin-bottom: 10px; }
+    @media (max-width: 768px) {
+      .rubrics h2 { font-size: 1.3rem; }
+      .rubrics h3 { font-size: 1.1rem; }
+      .rubric-table { font-size: 0.9rem; display: block; overflow-x: auto; }
+      .rubric-table thead th { position: static; }
+    }
+
+    /* Mobile Modal Styles */
+    @media (max-width: 768px) {
+      .cyber-modal-content {
+        padding: 24px 20px 20px 20px;
+        min-width: 280px;
+        max-width: 90vw;
+        border-radius: 12px;
+        margin: 20px;
+      }
+      .cyber-modal-content h3 {
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+      }
+      .cyber-modal-btns {
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .cyber-modal-btn {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1rem;
+        min-height: 48px;
+      }
+      .criteria-section {
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      .criteria-section h3 {
+        font-size: 1.2rem;
+      }
+      .criteria-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .criteria-item .criteria-weight {
+        margin-left: 0;
+        margin-top: 8px;
+        align-self: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cyber-modal-content {
+        padding: 20px 16px 16px 16px;
+        min-width: 260px;
+        max-width: 85vw;
+        margin: 16px;
+      }
+      .cyber-modal-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 14px;
+      }
+      .cyber-modal-btn {
+        padding: 10px 16px;
+        font-size: 0.95rem;
+        min-height: 50px;
+      }
+    }
+
+    /* Button hover effect for evaluation criteria */
+    #evaluationCriteriaBtn:hover {
+      background: #218838 !important;
+      border-color: #218838 !important;
+    }
+    /* Live mask particles */
+    .bg-live { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .mask-float {
+      position: absolute; width: 140px; height: 140px;
+      background-image: url('mask.png'); background-size: contain; background-repeat: no-repeat; background-position: center;
+      opacity: 0.08; filter: grayscale(100%);
+      animation-name: driftY, swayX, flicker;
+      animation-timing-function: ease-in-out, linear, ease-in-out;
+      animation-iteration-count: infinite, infinite, infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes driftY { 0% { transform: translateY(10vh) scale(1); } 50% { transform: translateY(-10vh) scale(1.02); } 100% { transform: translateY(10vh) scale(1); } }
+    @keyframes swayX { 0% { margin-left: -20px; } 50% { margin-left: 20px; } 100% { margin-left: -20px; } }
+    @keyframes flicker { 0%,100% { opacity: 0.06; } 50% { opacity: 0.12; } }
+  </style>
+</head>
+<body>
+  <div class="bg-layer">
+    <div class="bg-mask"></div>
+    <div class="bg-professor"></div>
+  </div>
+  <div class="bg-live" id="bgLive"></div>
+  <div class="header">
+    <div class="brand">
+      <img src="digicon.png" alt="DIGICON" class="brand-logo" />
+      <div class="brand-title">DIGICON <span class="brand-accent">3.0</span> • KARE ACM SIGBED</div>
+    </div>
+  </div>
+  <div class="laser-strip"></div>
+  <div class="main" style="max-width:1400px; margin:0 auto; text-align:center; position:relative; z-index:1;">
+    <div class="main-title">DIGICON 3.0</div>
+    <div class="subtitle">Every Heist Starts with a Plan. Every Idea Starts with a Code.</div>
+    <div class="desc">Organized by KARE ACM SIGBED Chapter. Step into the mission control. Plan your moves. Execute with precision. Outsmart the grid. Join the Heist.</div>
+    <div class="timer" id="countdown">Initializing countdown...</div>
+    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; align-items: center;">
+      <button class="main-btn" onclick="window.location.href='problem.html'">ENTER PORTAL</button>
+      <button class="main-btn" id="evaluationCriteriaBtn" style="background: #f0f0f0; color:#111; border: 1px solid #d8d8d8; box-shadow: 0 8px 18px rgba(0,0,0,0.06);">RUBRIC / BRIEF</button>
+    </div>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-label">&#128197; DATE</div>
+        <div class="info-value">Oct 31- Nov 1 2025</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">&#9201; DURATION</div>
+        <div class="info-value">24 Hours</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">&#127942; PRIZE POOL</div>
+        <div class="info-value">₹14,000</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evaluation Criteria Modal -->
+  <div class="cyber-modal" id="evaluationModal">
+    <div class="cyber-modal-content" style="max-width: 900px; max-height: 80vh; overflow-y: auto;">
+      <div id="evaluationModalContent"></div>
+      <div class="cyber-modal-btns">
+        <button class="cyber-modal-btn" id="evaluationModalClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+
+    // Evaluation Criteria functionality
+    async function fetchEvaluationCriteria() {
+      try {
+        const res = await fetch('/api/evaluation-criteria', { cache: 'no-store' });
+        return await res.json();
+      } catch (error) {
+        console.error('Error fetching evaluation criteria:', error);
+        return null;
+      }
+    }
+
+    function renderEvaluationCriteria(criteria) {
+      if (!criteria) {
+        return '<p>Evaluation criteria not available.</p>';
+      }
+
+      let html = '<h3 style="color: #c10016; margin-bottom: 20px; text-align: center;">📋 Evaluation Criteria</h3>';
+
+      // Technical Requirements
+      if (criteria.technicalRequirements) {
+        html += `
+          <div class="criteria-section">
+            <h3>${criteria.technicalRequirements.title}</h3>
+            <ul>
+              ${criteria.technicalRequirements.requirements.map(req => `<li>${req}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      // Goals & Deliverables
+      if (criteria.goalsDeliverables) {
+        html += `
+          <div class="criteria-section">
+            <h3>${criteria.goalsDeliverables.title}</h3>
+            <ul>
+              ${criteria.goalsDeliverables.goals.map(goal => `<li>${goal}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      // Judging Rubric
+      if (criteria.judgingRubric) {
+        html += '<div class="criteria-section">';
+        
+        // Round 1
+        if (criteria.judgingRubric.round1) {
+          html += `
+            <h4>${criteria.judgingRubric.round1.title}</h4>
+            <div class="criteria-grid">
+              ${criteria.judgingRubric.round1.criteria.map(criterion => `
+                <div class="criteria-item">
+                  <div>
+                    <div class="criteria-name">${criterion.name}</div>
+                    <div class="criteria-description">${criterion.description}</div>
+                  </div>
+                  <div class="criteria-weight">${criterion.weight}</div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        // Round 2
+        if (criteria.judgingRubric.round2) {
+          html += `
+            <h4 style="margin-top: 24px;">${criteria.judgingRubric.round2.title}</h4>
+            <div class="criteria-grid">
+              ${criteria.judgingRubric.round2.criteria.map(criterion => `
+                <div class="criteria-item">
+                  <div>
+                    <div class="criteria-name">${criterion.name}</div>
+                    <div class="criteria-description">${criterion.description}</div>
+                  </div>
+                  <div class="criteria-weight">${criterion.weight}</div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        html += '</div>';
+      }
+
+      return html;
+    }
+
+    function showEvaluationCriteriaModal() {
+      const modal = document.getElementById('evaluationModal');
+      const content = document.getElementById('evaluationModalContent');
+      content.innerHTML = `
+        <div class="rubrics">
+          <h2>RUBRICS</h2>
+          <p style="text-align:center; font-weight:600;">Hackathon Evaluation Rubrics (Total: 500 (5 Phases × 100 Marks))</p>
+
+          <div class="criteria-section">
+            <h3>Phase 1 – Design Thinking Evaluation (100 Marks)</h3>
+            <div class="phase-note">Focus: Problem understanding, logic planning, and design approach before schematic work begins.</div>
+            <table class="rubric-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Excellent (20/15)</th>
+                  <th>Very Good (16/12)</th>
+                  <th>Good (12/9)</th>
+                  <th>Fair (8/6)</th>
+                  <th>Unsatisfactory (4/3)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Problem Identification</td>
+                  <td>Clearly defines a realistic and industry-relevant problem, maps it effectively to a logic-based system suitable for Virtuoso.</td>
+                  <td>Defines a relevant problem with good logic mapping.</td>
+                  <td>Problem identified but logic mapping partly unclear.</td>
+                  <td>Vague or incomplete problem definition.</td>
+                  <td>Fails to identify a relevant problem.</td>
+                </tr>
+                <tr>
+                  <td>Empathy & Understanding</td>
+                  <td>Deep understanding of end-user needs and context; strong justification for using digital logic.</td>
+                  <td>Clear understanding of user context and technical relevance.</td>
+                  <td>Adequate understanding with some gaps.</td>
+                  <td>Limited insight into user needs or system purpose.</td>
+                  <td>No understanding of context or application shown.</td>
+                </tr>
+                <tr>
+                  <td>Idea Generation & Logic Planning</td>
+                  <td>Creative and technically sound concept with well-defined input/output mapping and logic flow.</td>
+                  <td>Sound logic plan with some creative thought.</td>
+                  <td>Basic idea with limited detail.</td>
+                  <td>Incomplete or unclear logic flow.</td>
+                  <td>No structured logic plan presented.</td>
+                </tr>
+                <tr>
+                  <td>Feasibility within Virtuoso</td>
+                  <td>Strong understanding of Virtuoso’s libraries, digital components, and resource limitations.</td>
+                  <td>Good awareness of feasible implementation methods.</td>
+                  <td>Average understanding of tool resources.</td>
+                  <td>Limited awareness of available cells or feasibility.</td>
+                  <td>Concept not implementable in Virtuoso.</td>
+                </tr>
+                <tr>
+                  <td>Innovation & Originality</td>
+                  <td>Highly innovative and unique idea beyond classroom examples.</td>
+                  <td>Moderately creative and practical idea.</td>
+                  <td>Some creativity but mostly familiar design.</td>
+                  <td>Minimal originality.</td>
+                  <td>No creative element present.</td>
+                </tr>
+                <tr>
+                  <td>Presentation & Clarity</td>
+                  <td>Exceptionally clear and confident presentation with logical explanation and visuals.</td>
+                  <td>Clear and structured explanation.</td>
+                  <td>Understandable but lacks strong clarity.</td>
+                  <td>Poorly organized explanation.</td>
+                  <td>Unable to explain the idea effectively.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="criteria-section">
+            <h3>Phase 2 – Schematic Design Evaluation (100 Marks)</h3>
+            <div class="phase-note">Focus: Circuit design and schematic implementation using Cadence Virtuoso.</div>
+            <table class="rubric-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Excellent (20/15)</th>
+                  <th>Very Good (16/12)</th>
+                  <th>Good (12/9)</th>
+                  <th>Fair (8/6)</th>
+                  <th>Unsatisfactory (4/3)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Schematic Completeness & Logic Accuracy</td>
+                  <td>Fully functional schematic; correct logic using gates, latches, or flip-flops; no errors.</td>
+                  <td>Mostly correct schematic with minor logical issues.</td>
+                  <td>Functionally valid with small missing links.</td>
+                  <td>Incomplete schematic or missing logic blocks.</td>
+                  <td>Incorrect or non-functional schematic.</td>
+                </tr>
+                <tr>
+                  <td>Component Utilization</td>
+                  <td>Correct and efficient use of digitalLib, basic, and analogLib components.</td>
+                  <td>Mostly correct component selection.</td>
+                  <td>Some improper or unnecessary components used.</td>
+                  <td>Limited or inefficient component use.</td>
+                  <td>Wrong or missing essential components.</td>
+                </tr>
+                <tr>
+                  <td>Connection & Hierarchy Clarity</td>
+                  <td>All nets properly connected, labeled, and organized with clear input/output hierarchy.</td>
+                  <td>Minor labeling or connection issues.</td>
+                  <td>Some signals unclear or mislabeled.</td>
+                  <td>Confusing layout and poor wiring clarity.</td>
+                  <td>Connections unclear or incorrect.</td>
+                </tr>
+                <tr>
+                  <td>Design Readability</td>
+                  <td>Clean, neat, professional schematic layout; easy to interpret.</td>
+                  <td>Clear layout with few visual errors.</td>
+                  <td>Acceptable but somewhat cluttered schematic.</td>
+                  <td>Unorganized or messy layout.</td>
+                  <td>Very poor schematic readability.</td>
+                </tr>
+                <tr>
+                  <td>Functional Completeness</td>
+                  <td>All defined functions implemented perfectly.</td>
+                  <td>Almost complete, missing small feature.</td>
+                  <td>Functionality achieved partially.</td>
+                  <td>Large portion incomplete.</td>
+                  <td>Functionality missing or incorrect.</td>
+                </tr>
+                <tr>
+                  <td>Logic Optimization & Creativity</td>
+                  <td>Optimized gate count, efficient design, and innovative simplifications.</td>
+                  <td>Mostly optimized and structured logic.</td>
+                  <td>Acceptable efficiency with redundant logic.</td>
+                  <td>Overly complex for simple task.</td>
+                  <td>Inefficient or illogical structure.</td>
+                </tr>
+                <tr>
+                  <td>Team Collaboration</td>
+                  <td>Excellent collaboration; equal contribution and synergy.</td>
+                  <td>Good teamwork with minor imbalance.</td>
+                  <td>Fair collaboration; partial dependency.</td>
+                  <td>Unequal or weak team effort.</td>
+                  <td>Poor or no teamwork evident.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="criteria-section">
+            <h3>Phase 3 – Testbench Design Evaluation (100 Marks)</h3>
+            <div class="phase-note">Focus: Testbench creation, input generation, and setup for simulation.</div>
+            <table class="rubric-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Excellent (20/15)</th>
+                  <th>Very Good (16/12)</th>
+                  <th>Good (12/9)</th>
+                  <th>Fair (8/6)</th>
+                  <th>Unsatisfactory (4/3)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Testbench Setup</td>
+                  <td>Well-structured testbench; correct use of sources, ground, and probes.</td>
+                  <td>Properly configured with minor setup issues.</td>
+                  <td>Acceptable setup, few missing connections.</td>
+                  <td>Partially connected testbench.</td>
+                  <td>Incorrect or incomplete setup.</td>
+                </tr>
+                <tr>
+                  <td>Input Stimulus Design</td>
+                  <td>Comprehensive and logical input cases covering all design conditions.</td>
+                  <td>Covers most test cases effectively.</td>
+                  <td>Limited coverage with basic inputs.</td>
+                  <td>Incomplete or repetitive test cases.</td>
+                  <td>No logical input conditions applied.</td>
+                </tr>
+                <tr>
+                  <td>Simulation Readiness</td>
+                  <td>Perfect transient setup; parameters well-tuned for waveform clarity.</td>
+                  <td>Mostly accurate setup with small errors.</td>
+                  <td>Acceptable but not well-optimized.</td>
+                  <td>Poorly defined simulation parameters.</td>
+                  <td>Simulation not runnable.</td>
+                </tr>
+                <tr>
+                  <td>Waveform Observation Planning</td>
+                  <td>All key nodes correctly probed and analyzed.</td>
+                  <td>Most critical nodes selected.</td>
+                  <td>Some important nodes missing.</td>
+                  <td>Limited observation points.</td>
+                  <td>No proper waveform observation setup.</td>
+                </tr>
+                <tr>
+                  <td>Clarity & Labeling</td>
+                  <td>All inputs and outputs clearly labeled and annotated.</td>
+                  <td>Minor labeling inconsistencies.</td>
+                  <td>Some signals unclear or unlabeled.</td>
+                  <td>Labels incomplete or confusing.</td>
+                  <td>No clear labeling or annotation.</td>
+                </tr>
+                <tr>
+                  <td>Debugging & Responsiveness</td>
+                  <td>Proactively identifies and resolves setup/simulation issues efficiently.</td>
+                  <td>Good debugging with quick resolution.</td>
+                  <td>Some debugging ability shown.</td>
+                  <td>Needs assistance to fix issues.</td>
+                  <td>Unable to debug or respond to errors.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="criteria-section">
+            <h3>Phase 4 – System Modification, Output & Verification (100 Marks)</h3>
+            <div class="phase-note">Focus: Simulation, waveform verification, and refinement.</div>
+            <table class="rubric-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Excellent (20/15)</th>
+                  <th>Very Good (16/12)</th>
+                  <th>Good (12/9)</th>
+                  <th>Fair (8/6)</th>
+                  <th>Unsatisfactory (4/3)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Functional Output Verification</td>
+                  <td>Output fully matches truth table and design goals across all inputs.</td>
+                  <td>Accurate results with minor mismatches.</td>
+                  <td>Functionality verified partially.</td>
+                  <td>Results inconsistent or unstable.</td>
+                  <td>Incorrect or no valid output produced.</td>
+                </tr>
+                <tr>
+                  <td>Waveform Presentation & Annotation</td>
+                  <td>Waveforms clean, well-labeled, and clearly demonstrate timing behavior.</td>
+                  <td>Mostly labeled and readable.</td>
+                  <td>Acceptable but lacks clarity or organization.</td>
+                  <td>Poorly annotated or overlapping plots.</td>
+                  <td>No clear waveform presentation.</td>
+                </tr>
+                <tr>
+                  <td>Timing Accuracy & Stability</td>
+                  <td>Excellent signal timing, no glitches or unwanted transitions.</td>
+                  <td>Minor timing deviations.</td>
+                  <td>Acceptable with some jitter or delay issues.</td>
+                  <td>Noticeable glitches or unstable transitions.</td>
+                  <td>Unstable or incorrect timing.</td>
+                </tr>
+                <tr>
+                  <td>Debugging & Improvement</td>
+                  <td>Effectively analyzes and fixes schematic issues; demonstrates strong debugging.</td>
+                  <td>Good debugging, resolves most errors.</td>
+                  <td>Limited issue identification.</td>
+                  <td>Needs guidance for corrections.</td>
+                  <td>No debugging attempted.</td>
+                </tr>
+                <tr>
+                  <td>Parameter Tuning & Enhancement</td>
+                  <td>Implements smart modifications to improve circuit behavior or performance.</td>
+                  <td>Applies effective small refinements.</td>
+                  <td>Minimal improvements applied.</td>
+                  <td>Attempts improvement with weak impact.</td>
+                  <td>No design refinement or tuning made.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="criteria-section">
+            <h3>Phase 5 – Final Evaluation (100 Marks)</h3>
+            <div class="phase-note">Focus: Overall design quality, innovation, and presentation.</div>
+            <table class="rubric-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Excellent (20/15)</th>
+                  <th>Very Good (16/12)</th>
+                  <th>Good (12/9)</th>
+                  <th>Fair (8/6)</th>
+                  <th>Unsatisfactory (4/3)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Overall Design Integration</td>
+                  <td>All schematic, testbench, and outputs integrate seamlessly as one working system.</td>
+                  <td>Mostly integrated; minor signal mismatches.</td>
+                  <td>Partial integration with limited functionality.</td>
+                  <td>Poorly connected or inconsistent.</td>
+                  <td>Design not integrated or non-functional.</td>
+                </tr>
+                <tr>
+                  <td>Innovation & Application Relevance</td>
+                  <td>Highly creative, real-world relevant, and practically applicable design.</td>
+                  <td>Practical and somewhat innovative.</td>
+                  <td>Functionally valid but not unique.</td>
+                  <td>Basic or repetitive design.</td>
+                  <td>No real-world relevance or innovation.</td>
+                </tr>
+                <tr>
+                  <td>Technical Understanding</td>
+                  <td>Deep understanding of logic operation, waveform reasoning, and timing explanation.</td>
+                  <td>Clear and confident technical explanation.</td>
+                  <td>Basic understanding with some confusion.</td>
+                  <td>Weak explanation; unclear reasoning.</td>
+                  <td>Unable to explain logic or output.</td>
+                </tr>
+                <tr>
+                  <td>Presentation Quality</td>
+                  <td>Clear, structured, and confident communication with effective visuals.</td>
+                  <td>Well-presented and understandable.</td>
+                  <td>Satisfactory but lacks engagement.</td>
+                  <td>Poor structure or unclear flow.</td>
+                  <td>Ineffective presentation.</td>
+                </tr>
+                <tr>
+                  <td>Effort, Consistency & Teamwork</td>
+                  <td>Consistent work, balanced contribution, strong team synergy.</td>
+                  <td>Good teamwork with small inconsistencies.</td>
+                  <td>Adequate participation from most members.</td>
+                  <td>Unequal or uncoordinated effort.</td>
+                  <td>Minimal contribution or teamwork.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function hideEvaluationCriteriaModal() {
+      const modal = document.getElementById('evaluationModal');
+      modal.classList.remove('active');
+    }
+
+    // Add event listeners
+    document.getElementById('evaluationCriteriaBtn').addEventListener('click', showEvaluationCriteriaModal);
+    document.getElementById('evaluationModalClose').addEventListener('click', hideEvaluationCriteriaModal);
+
+    // Close modal when clicking outside
+    document.getElementById('evaluationModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        hideEvaluationCriteriaModal();
+      }
+    });
+
+    // Add spin animation for loading
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Countdown to event start (set date/time as needed)
+    const eventStart = new Date('2025-10-11T09:00:00+05:30').getTime();
+    function tick() {
+      const now = Date.now();
+      const diff = eventStart - now;
+      const el = document.getElementById('countdown');
+      if (!el) return;
+      if (diff <= 0) { el.textContent = 'The Heist is Live'; return; }
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+      const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const s = Math.floor((diff % (1000*60)) / 1000);
+      el.textContent = `${String(d).padStart(2,'0')}D : ${String(h).padStart(2,'0')}H : ${String(m).padStart(2,'0')}M : ${String(s).padStart(2,'0')}S`;
+    }
+    tick(); setInterval(tick, 1000);
+
+    // Live mask background spawn
+    (function spawnMasks(){
+      var container = document.getElementById('bgLive');
+      if (!container) return;
+      var count = Math.min(12, Math.max(6, Math.floor(window.innerWidth / 180)));
+      for (var i=0;i<count;i++){
+        var el = document.createElement('div');
+        el.className = 'mask-float';
+        var size = 80 + Math.random()*140; // 80-220px
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+        var left = Math.random()*100; // vw
+        var top = Math.random()*100; // vh
+        el.style.left = left + 'vw';
+        el.style.top = top + 'vh';
+        var durY = 12 + Math.random()*12; // 12-24s
+        var durX = 8 + Math.random()*10;  // 8-18s
+        var delay = -Math.random()*durY;  // negative to desync
+        var flick = 4 + Math.random()*6;  // 4-10s
+        el.style.animationDuration = durY+'s, '+durX+'s, '+flick+'s';
+        el.style.animationDelay = delay+'s, '+(delay/2)+'s, '+(delay/3)+'s';
+        el.style.opacity = (0.05 + Math.random()*0.08).toFixed(2);
+        container.appendChild(el);
+      }
+      window.addEventListener('resize', function(){
+        // Throttle simple refresh
+        if (container._refreshing) return; container._refreshing=true;
+        setTimeout(function(){
+          container.innerHTML='';
+          container._refreshing=false;
+          spawnMasks();
+        }, 400);
+      });
+    })();
+  </script>
+  <footer class="site-footer"><span>Designed and Developed by <span class="brand">Nextlinkers</span></span></footer>
+</body>
+</html>

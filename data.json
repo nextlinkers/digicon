@@ -1,0 +1,275 @@
+{
+  "problemStatements": [
+    {
+      "id": "ps001",
+      "title": "Smart Campus Entry Gate Controller",
+      "description": "Design a digital logic circuit that opens the campus gate only when a valid student ID is detected, the vehicle is registered, the area near the gate is clear, and the entry request button is pressed. If any condition fails, an alert should be triggered. The design should include logic gates for decision control and a latch to hold the gate-open signal until the request ends. Simulate in Cadence Virtuoso to verify correct gate operation under all conditions.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps002",
+      "title": "Automatic Room Light Control System",
+      "description": "Create a logic circuit that turns ON the light only when a person is detected inside the room and ambient light is below a threshold. The light should turn OFF automatically when no motion is detected for a certain period. Use combinational logic for decision-making and a flip-flop for state holding.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps003",
+      "title": "Smart Traffic Signal Controller with Emergency Override",
+      "description": "Design a 3-way traffic light controller that gives green light priority to emergency vehicles when detected. The normal sequence should resume once the emergency signal ends. Use logic gates and flip-flops to manage timing and signal priority.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps004",
+      "title": "Digital Water Tank Level Monitor",
+      "description": "Implement a logic circuit that activates the water pump when the water level is low and stops it when the tank is full. Include an overflow and dry-run protection system. Use logic gates for decision-making and a latch to hold pump status.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps005",
+      "title": "Automatic Street Light System",
+      "description": "Build a logic circuit that switches street lights ON at night and OFF during the day using light and motion sensors. Add a manual override for maintenance. Simulate day–night transitions and motion conditions in Virtuoso.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps006",
+      "title": "Fire Alarm Activation Unit",
+      "description": "Design a logic circuit that triggers an alarm only when smoke and temperature sensors both indicate unsafe levels. Include a reset button to manually stop the alarm once the situation is safe. Implement using AND/OR logic and a latch.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps007",
+      "title": "Smart Parking Slot Indicator",
+      "description": "Create a circuit that lights up a green LED when a parking slot is empty and red when occupied. Use sensors for vehicle presence and gates for logic control. Extend with a counter to monitor total free slots.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps008",
+      "title": "Automatic Door Lock System with Passcode Validation",
+      "description": "Design a logic circuit that unlocks the door only when a correct 4-bit passcode is entered, and an authorized entry request signal is active. Use a comparator-based design and a latch to hold the door’s unlocked state temporarily.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps009",
+      "title": "Digital Elevator Direction Controller",
+      "description": "Build a simple elevator logic system that decides whether to move up or down based on the difference between current and requested floor signals. Include stop logic for safety when doors are open.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps010",
+      "title": "Home Security Intrusion Detector",
+      "description": "Create a logic circuit that activates an alarm if motion or window sensors detect intrusion while the system is armed. Add a manual disarm switch for authorized users. Use combinational logic and latch behavior.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps011",
+      "title": "Automatic Railway Crossing Gate System",
+      "description": "Design a circuit that closes the gate when a train is detected within a certain range and opens it when the train has passed. Use sensor inputs, gates for control logic, and a flip-flop for maintaining gate state.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps012",
+      "title": "Greenhouse Environmental Controller",
+      "description": "Develop a circuit that turns ON the fan when temperature is high and the sprayer when soil moisture is low. The system should not activate both simultaneously. Use logic gates for condition control.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps013",
+      "title": "Digital Smoke and Gas Detector",
+      "description": "Design a safety circuit that sounds an alarm when either smoke or gas concentration exceeds safe limits, but stays silent otherwise. Include a test button and reset functionality.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps014",
+      "title": "Traffic Junction Pedestrian Priority System",
+      "description": "Create a logic circuit where pedestrian crossing lights turn ON only when the crossing button is pressed and the traffic signal is red. Implement priority logic and simulate transitions in Virtuoso.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps015",
+      "title": "Intelligent Classroom Fan Controller",
+      "description": "Build a logic circuit that turns the fan ON when room occupancy is detected and temperature exceeds a threshold. It should turn OFF automatically when the room becomes empty or cools down.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps016",
+      "title": "Battery Charging Control System",
+      "description": "Design a logic circuit that starts charging when battery voltage is low and stops when it reaches full capacity. Include overcharge protection and a LED indicator for charging status.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps017",
+      "title": "Factory Machine Safety Interlock",
+      "description": "Develop a circuit that allows machine start only when safety door is closed, emergency stop is inactive, and start button is pressed. Implement a latch to maintain ON state until stop is pressed.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps018",
+      "title": "Smart Campus Street Lamp System",
+      "description": "Design a circuit where lamps turn ON when it’s dark and presence is detected. Include a manual maintenance override and simulate the system under varying light conditions.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps019",
+      "title": "Digital Rain-Sensing Wiper Control",
+      "description": "Create a circuit that turns ON the wiper motor when rain is detected and vehicle ignition is ON. Include a safety delay after rain stops before turning OFF the motor.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps020",
+      "title": "Visitor Counter for Auditorium",
+      "description": "Implement a circuit that counts the number of people entering and exiting a hall using IR sensors. Display whether the hall is full using a comparator and output LEDs.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps021",
+      "title": "Temperature-Based Cooling System",
+      "description": "Build a circuit that turns ON a cooling fan when temperature exceeds a threshold and keeps it ON until it falls below a lower limit (hysteresis). Use comparators and latches to design the control logic.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps022",
+      "title": "Library Silence Zone Indicator",
+      "description": "Design a logic circuit that turns ON a “Silence Please” LED if noise or motion exceeds limits in the reading zone. Reset automatically when quiet conditions are restored.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps023",
+      "title": "Digital Fire Door Release System",
+      "description": "Create a logic that unlocks fire exit doors only during an active fire alarm, ensuring other conditions (manual override, door status) are safe. Implement using AND/OR logic and a latch.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps024",
+      "title": "Smart Waste Bin Level Indicator",
+      "description": "Design a logic circuit that turns ON a “Full” LED when bin level sensors indicate full capacity. Include overflow alarm and reset mechanism for empty condition.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps025",
+      "title": "Hospital ICU Power Backup Switcher",
+      "description": "Build a logic circuit that activates backup power only when main supply fails and battery voltage is sufficient. Add an alarm when both supplies are unavailable.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps026",
+      "title": "Digital Toll Booth Vehicle Counter",
+      "description": "Create a logic circuit that opens the barrier when toll is paid and vehicle presence is detected. After vehicle passes, barrier closes automatically. Use flip-flop or monostable logic.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps027",
+      "title": "Smart Fire Sprinkler Activation System",
+      "description": "Design a circuit that activates sprinklers when both smoke and temperature sensors cross safety limits. Add manual override to stop sprinklers after activation.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps028",
+      "title": "Warehouse Temperature and Humidity Monitor",
+      "description": "Build a circuit that activates cooling if temperature is high and dehumidifier if humidity is high. Ensure both are not active together. Use basic gates and latches.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps029",
+      "title": "Smart Street Crossing for Children’s Zone",
+      "description": "Develop a logic that stops traffic when a pedestrian request is made and resumes normal operation after safe crossing. Use timing logic with flip-flops to maintain sequence.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    },
+    {
+      "id": "ps030",
+      "title": "Digital System for Safe Chemical Mixing",
+      "description": "Design a circuit that allows chemical mixing only if both containers are sealed properly, the temperature is within safe range, and a manual enable switch is pressed. Include safety lock logic and alert output.",
+      "maxSelections": 1,
+      "category": null,
+      "difficulty": null,
+      "technologies": []
+    }
+  ],
+  "registrations": []
+}

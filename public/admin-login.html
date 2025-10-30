@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login – DIGICON 3.0</title>
+  
+  <style>
+    body { margin:0; font-family: Verdana, Tahoma, sans-serif; background: linear-gradient(135deg, #ffffff 0%, #f5f7fa 100%); min-height: 100vh; display:flex; align-items:center; justify-content:center; }
+    .card { background:#ffffff; border-radius:12px; width:100%; max-width:380px; padding:24px; box-shadow: 0 10px 30px rgba(0,0,0,0.10); border:1px solid #ececec; color:#111; }
+    h1 { margin:0 0 12px 0; font-size:1.2rem; color:#111; text-align:center; letter-spacing:0.5px; }
+    p { margin:0 0 16px 0; color:#555; text-align:center; }
+    label { display:block; margin:10px 0 6px; font-weight:600; }
+    input { width:100%; padding:12px 14px; border:1px solid #ddd; border-radius:8px; font-size:1rem; background:#fff; color:#111; }
+    .btn { margin-top:16px; width:100%; padding:12px 16px; border:none; border-radius:8px; background:#C1121F; color:#fff; font-weight:700; cursor:pointer; box-shadow: 0 8px 18px rgba(193,18,31,0.20); }
+    .btn:hover { background:#a50f19; border:1px solid #C1121F; }
+    .hint { margin-top:12px; font-size:0.9rem; color:#666; text-align:center; }
+    @media (max-width:480px){ .card{ margin:12px; padding:18px; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Admin Login</h1>
+    <p>Access the mission console</p>
+    <form method="POST" action="/api/admin/login">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="btn" type="submit">Unlock Access</button>
+    </form>
+    <div class="hint">Designed and Developed by Nextlinkers</div>
+  </div>
+</body>
+</html>

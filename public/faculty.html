@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Coordinator – DIGICON 3.0</title>
+  <link rel="icon" href="cybernerds.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin:0; font-family: Verdana, Tahoma, sans-serif; background: linear-gradient(120deg, #0A0A0A 0%, #2B2B2B 70%, #0A0A0A 100%); color:#F5F5F5; min-height:100vh; display:flex; }
+    .sidebar { width: 260px; background:#0A0A0A; border-right:1px solid #2B2B2B; padding:14px; position:sticky; top:0; height:100vh; }
+    .brand { display:flex; align-items:center; gap:8px; padding:8px 6px 16px 6px; border-bottom:1px solid #2B2B2B; margin-bottom:12px; }
+    .brand img { height:28px; width:auto; filter:drop-shadow(0 1px 4px #0007); }
+    .brand .t { font-size: 0.95rem; color:#D4AF37; font-weight:700; }
+    .menu { display:flex; flex-direction:column; gap:6px; }
+    .menu button { width:100%; text-align:left; background:#121212; color:#F5F5F5; border:1px solid #2B2B2B; border-radius:10px; padding:10px 12px; cursor:pointer; }
+    .menu button.active, .menu button:hover { background:#1A1A1A; border-color:#C1121F; }
+    .content { flex:1; padding:18px; max-width: 1400px; margin: 0 auto; }
+    .header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
+    .header .title { font-weight:700; color:#D4AF37; }
+    .panel { background: rgba(20,20,20,0.9); border:1px solid #2B2B2B; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.45); margin-bottom:16px; overflow:hidden; }
+    .panel-h { background:#0F0F0F; padding:12px 14px; border-bottom:1px solid #2B2B2B; color:#D4AF37; font-weight:700; display:flex; align-items:center; gap:10px; justify-content:space-between; }
+    .panel-c { padding:14px; }
+    .table-wrap { overflow:auto; border-radius:10px; border:1px solid #2B2B2B; }
+    table { width:100%; border-collapse:collapse; background:#121212; color:#F5F5F5; }
+    th, td { padding:10px 12px; border-bottom:1px solid #2B2B2B; text-align:left; }
+    th { background:#1A1A1A; position:sticky; top:0; z-index:1; }
+    .muted { color:#bbb; }
+    .grid { display:grid; grid-template-columns: repeat(3, minmax(260px,1fr)); gap: 12px; }
+    @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, minmax(240px,1fr)); } }
+    @media (max-width: 700px) { body{ flex-direction:column; } .sidebar{ position:relative; height:auto; width:100%; } .grid { grid-template-columns: 1fr; } }
+    .stat { background:#121212; border:1px solid #2B2B2B; border-radius:10px; padding:14px; text-align:center; }
+    .stat .n { font-size: 1.6rem; font-weight:700; color:#D4AF37; }
+    .pill { display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid rgba(212,175,55,0.25); background:rgba(43,43,43,0.55); }
+    .footer { text-align:center; color:#F5F5F5; padding:12px; opacity:0.85; font-size:0.92rem; }
+    .search { display:flex; gap:8px; align-items:center; }
+    .search input, .search select { background:#1A1A1A; color:#F5F5F5; border:1px solid #2B2B2B; border-radius:8px; padding:8px 10px; }
+    /* Login overlay */
+    .login-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .login-card { background:#121212; border:1px solid #2B2B2B; border-radius:12px; padding:20px; width:100%; max-width:380px; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
+    .login-card h3{ margin:0 0 10px 0; color:#D4AF37; }
+    .login-card label{ display:block; margin:10px 0 6px; }
+    .login-card input{ width:100%; padding:10px; border-radius:8px; border:1px solid #2B2B2B; background:#1A1A1A; color:#F5F5F5; }
+    .login-card button{ margin-top:12px; width:100%; padding:10px; border:none; border-radius:8px; background:#C1121F; color:#fff; font-weight:700; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <h3>Faculty Login</h3>
+      <label for="fuser">User ID</label>
+      <input id="fuser" type="text" placeholder="VMNECE" />
+      <label for="fpass">Passcode</label>
+      <input id="fpass" type="password" placeholder="41300@ECE" />
+      <button id="fLoginBtn">Login</button>
+      <div id="fLoginMsg" class="muted" style="margin-top:8px;"></div>
+    </div>
+  </div>
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="cybernerds.png" alt="Event" />
+      <img src="owaspLogo.png" alt="ACM" />
+      <div class="t">DIGICON 3.0 – Faculty</div>
+    </div>
+    <div class="menu">
+      <button class="active" data-panel="dashboard">Dashboard</button>
+      <button data-panel="participants">Participants</button>
+      <button data-panel="problems">Problem Statements</button>
+      <button data-panel="mapping">Registered Details</button>
+      <button data-panel="faculty">Faculty Details</button>
+      <button data-panel="attendance">Attendance Report</button>
+      <button data-panel="logs">User Logs</button>
+    </div>
+  </aside>
+  <main class="content">
+    <div class="header">
+      <div class="title">Faculty Coordinator Dashboard</div>
+      <div class="pill" id="now">Loading time…</div>
+    </div>
+
+    <section class="panel" data-view="dashboard">
+      <div class="panel-h">Overview</div>
+      <div class="panel-c">
+        <div class="grid">
+          <div class="stat"><div class="n" id="statTeams">-</div><div>Total Teams</div></div>
+          <div class="stat"><div class="n" id="statProblems">-</div><div>Problem Statements</div></div>
+          <div class="stat"><div class="n" id="statRegs">-</div><div>Registrations</div></div>
+          <div class="stat"><div class="n" id="statAvailable">-</div><div>Available Problems</div></div>
+          <div class="stat"><div class="n" id="statFull">-</div><div>Full Problems</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-view="participants" style="display:none;">
+      <div class="panel-h">
+        <span>Participants</span>
+        <div class="search"><input id="sParticipants" type="text" placeholder="Search team/leader/department" /></div>
+      </div>
+      <div class="panel-c">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Team #</th>
+                <th>Team Name</th>
+                <th>Leader</th>
+                <th>Department</th>
+              </tr>
+            </thead>
+            <tbody id="tblParticipants"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-view="problems" style="display:none;">
+      <div class="panel-h">Problem Statements</div>
+      <div class="panel-c">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Teams</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tblProblems"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-view="mapping" style="display:none;">
+      <div class="panel-h">
+        <span>Registered Details – Team → Problem</span>
+        <div class="search"><input id="sMapping" type="text" placeholder="Search team/problem" /></div>
+      </div>
+      <div class="panel-c">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Reg ID</th>
+                <th>Team #</th>
+                <th>Team Name</th>
+                <th>Department</th>
+                <th>Leader</th>
+                <th>Problem</th>
+                <th>Registered</th>
+              </tr>
+            </thead>
+            <tbody id="tblMapping"><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-view="faculty" style="display:none;">
+      <div class="panel-h">Faculty Details</div>
+      <div class="panel-c">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody id="tblFaculty"><tr><td colspan="5" class="muted">No faculty added</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-view="attendance" style="display:none;">
+      <div class="panel-h">Attendance Report</div>
+      <div class="panel-c">
+        <p class="muted">Attendance tracking not configured yet. We can integrate a simple check-in/out API and QR scanning flow, then list records here.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Team #</th>
+                <th>Team Name</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="4" class="muted">No records</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-view="logs" style="display:none;">
+      <div class="panel-h">User Logs (Login/Logout)</div>
+      <div class="panel-c">
+        <p class="muted">Logging is not yet captured server-side. We can record login/logout with IP and timestamps, then list them here.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>User</th>
+                <th>IP Address</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="4" class="muted">No logs</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">Designed and Developed by Nextlinkers</div>
+  </main>
+
+  <script>
+    // Simple client-side login gate
+    function ensureLogin(){
+      const authed = localStorage.getItem('facultyAuth') === '1';
+      const overlay = document.getElementById('loginOverlay');
+      overlay.style.display = authed ? 'none' : 'flex';
+      return authed;
+    }
+    document.getElementById('fLoginBtn').addEventListener('click', async () => {
+      const u = (document.getElementById('fuser').value||'').trim();
+      const p = (document.getElementById('fpass').value||'').trim();
+      const msg = document.getElementById('fLoginMsg');
+      if (!u || !p) { msg.textContent = 'Enter user ID and passcode'; return; }
+      if (!(u === 'VMNECE' && p === '41300@ECE')) { msg.textContent = 'Invalid credentials'; return; }
+      localStorage.setItem('facultyAuth','1');
+      document.getElementById('loginOverlay').style.display = 'none';
+      try {
+        await fetch('/api/notify-login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ user: u, role: 'faculty' }) });
+      } catch {}
+      load();
+    });
+
+    // Sidebar navigation
+    document.querySelectorAll('.menu button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const panel = btn.getAttribute('data-panel');
+        document.querySelectorAll('[data-view]').forEach(p => {
+          p.style.display = (p.getAttribute('data-view') === panel) ? '' : 'none';
+        });
+      });
+    });
+
+    // Time chip
+    function tickNow(){ document.getElementById('now').textContent = new Date().toLocaleString('en-IN', { hour12:true, timeZone:'Asia/Kolkata' }) + ' IST'; }
+    tickNow(); setInterval(tickNow, 1000);
+
+    // Data fetchers
+    async function fetchTeams(){ try { const r = await fetch('/api/teams', { cache:'no-store' }); return await r.json(); } catch { return []; } }
+    async function fetchProblems(){ try { const r = await fetch('/api/problem-statements', { cache:'no-store' }); return await r.json(); } catch { return []; } }
+    async function fetchRegistrations(){ try { const r = await fetch('/api/registrations', { cache:'no-store' }); return await r.json(); } catch { return []; } }
+
+    function renderParticipants(teams){
+      const tb = document.getElementById('tblParticipants');
+      tb.innerHTML = '';
+      const q = (document.getElementById('sParticipants').value||'').toLowerCase();
+      const data = (teams||[]).filter(t=>{
+        const dep = (t.department||'').toLowerCase();
+        return String(t.teamNumber).toLowerCase().includes(q) || (t.teamName||'').toLowerCase().includes(q) || (t.teamLeader||'').toLowerCase().includes(q) || dep.includes(q);
+      });
+      if (data.length === 0) { tb.innerHTML = '<tr><td colspan="4" class="muted">No participants found</td></tr>'; return; }
+      data.sort((a,b)=> String(a.teamNumber).localeCompare(String(b.teamNumber)));
+      data.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${t.teamNumber||'-'}</td><td>${t.teamName||'-'}</td><td>${t.teamLeader||'-'}</td><td>${t.department||'—'}</td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    function renderProblems(problems){
+      const tb = document.getElementById('tblProblems');
+      tb.innerHTML='';
+      if (!problems || problems.length === 0) { tb.innerHTML = '<tr><td colspan="5" class="muted">No problems</td></tr>'; return; }
+      problems.sort((a,b)=> String(a.id).localeCompare(String(b.id)));
+      problems.forEach(p => {
+        const teams = `${p.selectedCount ?? p.selected_count}/${p.maxSelections ?? p.max_selections}`;
+        const ok = (p.isAvailable ?? p.is_available);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${p.id}</td><td>${p.title}</td><td>${p.category||'N/A'}</td><td>${teams}</td><td>${ok ? '✅ Available' : '❌ Full'}</td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    function renderMapping(registrations){
+      const tb = document.getElementById('tblMapping');
+      tb.innerHTML='';
+      const q = (document.getElementById('sMapping').value||'').toLowerCase();
+      const data = (registrations||[]).filter(r=>{
+        return String(r.team_number).toLowerCase().includes(q) || (r.team_name||'').toLowerCase().includes(q) || (r.problem_title||'').toLowerCase().includes(q) || (r.team_leader||'').toLowerCase().includes(q);
+      });
+      if (data.length === 0) { tb.innerHTML = '<tr><td colspan="7" class="muted">No registrations</td></tr>'; return; }
+      data.sort((a,b)=> { const na = parseInt(a.team_number,10), nb = parseInt(b.team_number,10); if (!isNaN(na) && !isNaN(nb)) return na-nb; return String(a.team_number).localeCompare(String(b.team_number)); });
+      data.forEach(r => {
+        const regId = r.team_number || '-';
+        const dept = r.department || '—';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${regId}</td><td>${r.team_number}</td><td>${r.team_name}</td><td>${dept}</td><td>${r.team_leader}</td><td>${r.problem_title}</td><td>${new Date(r.registration_date_time).toLocaleString('en-IN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true, timeZone:'Asia/Kolkata' })} IST</td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    let cacheTeams = [], cacheProblems = [], cacheRegs = [];
+    async function load(){
+      if (!ensureLogin()) return;
+      const [teams, problems, regs] = await Promise.all([fetchTeams(), fetchProblems(), fetchRegistrations()]);
+      cacheTeams = teams; cacheProblems = problems; cacheRegs = regs;
+      const available = problems.filter(p => (p.isAvailable ?? p.is_available)).length;
+      document.getElementById('statTeams').textContent = teams.length;
+      document.getElementById('statProblems').textContent = problems.length;
+      document.getElementById('statRegs').textContent = regs.length;
+      document.getElementById('statAvailable').textContent = available;
+      document.getElementById('statFull').textContent = problems.length - available;
+      renderParticipants(cacheTeams);
+      renderProblems(cacheProblems);
+      renderMapping(cacheRegs);
+    }
+
+    document.getElementById('sParticipants').addEventListener('input', () => renderParticipants(cacheTeams));
+    document.getElementById('sMapping').addEventListener('input', () => renderMapping(cacheRegs));
+
+    ensureLogin();
+    load();
+
+    try {
+      const es = new EventSource('/api/events');
+      es.onmessage = async (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (!payload || !payload.type) return;
+          if (payload.type === 'registration' || payload.type === 'deletion' || payload.type === 'reset') {
+            load();
+          }
+        } catch {}
+      };
+      es.onerror = () => { try { es.close(); } catch {} };
+    } catch {}
+  </script>
+</body>
+</html>
