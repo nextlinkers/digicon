@@ -127,6 +127,23 @@ class MongoStore {
     return criteria || null;
   }
 
+  // Settings (e.g., release toggle)
+  async getSettings() {
+    if (!this.collections) await this.init();
+    const settings = this.db.collection(`${this.collectionPrefix}settings`);
+    const doc = await settings.findOne({ _id: 'global' });
+    return doc?.data || {};
+  }
+
+  async setSettings(partial) {
+    if (!this.collections) await this.init();
+    const settings = this.db.collection(`${this.collectionPrefix}settings`);
+    const current = (await settings.findOne({ _id: 'global' }))?.data || {};
+    const next = { ...current, ...(partial || {}) };
+    await settings.updateOne({ _id: 'global' }, { $set: { data: next } }, { upsert: true });
+    return next;
+  }
+
   async getAllRegistrations() {
     if (!this.collections) await this.init();
     const { regs, ps } = this.collections;

@@ -380,6 +380,7 @@
                 <div class="section-header">
                     📋 Problem Statements
                     <button class="btn" onclick="refreshData()">🔄 Refresh</button>
+                    <button class="btn" onclick="toggleRelease()" id="releaseBtn" style="background:#6c757d;border-color:#6c757d;">🔒 Release: OFF</button>
                     <button class="btn" onclick="setAllLimitsOne()" style="background:#198754;border-color:#198754;">⚙️ Set All Limits = 1</button>
                     <button class="btn" onclick="exportData('problem-statements', 'csv')">📊 Export CSV</button>
                     <button class="btn" onclick="exportData('problem-statements', 'json')">📄 Export JSON</button>
@@ -684,6 +685,32 @@
                 alert('Replace failed: ' + e.message);
             }
         }
+        async function fetchReleaseStatus(){
+            try {
+                const res = await fetch('/api/release-status', { cache:'no-store' });
+                const data = await res.json();
+                setReleaseUI(Boolean(data.released));
+            } catch (e) { setReleaseUI(false); }
+        }
+
+        function setReleaseUI(on){
+            const btn = document.getElementById('releaseBtn');
+            if (!btn) return;
+            if (on){ btn.textContent = '🔓 Release: ON'; btn.style.background = '#198754'; btn.style.borderColor = '#198754'; }
+            else { btn.textContent = '🔒 Release: OFF'; btn.style.background = '#6c757d'; btn.style.borderColor = '#6c757d'; }
+        }
+
+        async function toggleRelease(){
+            const current = document.getElementById('releaseBtn').textContent.includes('ON');
+            const next = !current;
+            try {
+                const res = await fetch('/api/admin/release', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ released: next }) });
+                const data = await res.json();
+                if (!res.ok || !data.ok){ alert('Failed to update release status'); return; }
+                setReleaseUI(next);
+                showNotification(next ? 'Problems released to public' : 'Problems hidden from public');
+            } catch (e) { alert('Failed to update release status'); }
+        }
 
         async function reloadTeams() {
             try {
@@ -781,7 +808,7 @@
 
         
         // Load data on page load
-        fetchData();
+        fetchData(); fetchReleaseStatus();
         
         // Connect to real-time updates
         connectToRealTimeUpdates();

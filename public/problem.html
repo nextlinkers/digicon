@@ -857,6 +857,9 @@
       const res = await fetch('/api/problem-statements', { cache: 'no-store', headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' } });
       return await res.json();
     }
+    async function fetchReleaseStatus(){
+      try { const r = await fetch('/api/release-status', { cache:'no-store' }); return await r.json(); } catch { return { released:false }; }
+    }
     // Auto-fill: fetch single team by number
     async function fetchTeamByNumber(num) {
       try {
@@ -1066,6 +1069,14 @@
       }
     };
     async function load() {
+      const status = await fetchReleaseStatus();
+      if (!status || !status.released){
+        const list = document.getElementById('problemList');
+        if (list) list.innerHTML = '';
+        const note = document.querySelector('.problem-note');
+        if (note){ note.innerHTML = '<h3>⏳ Problem Statements</h3><ul><li>Problem statements will be released soon. Please check back later.</li></ul>'; }
+        return;
+      }
       const problems = await fetchProblems();
       renderProblems(problems);
     }

@@ -155,6 +155,15 @@ function broadcastUpdate(type, data) {
 async function initializeDatabase() {
   try {
     await db.init();
+    // Load release settings if available
+    try {
+      if (typeof db.getSettings === 'function') {
+        const settings = await db.getSettings();
+        if (settings && typeof settings.problemsReleased === 'boolean') {
+          app.locals.problemsReleased = settings.problemsReleased;
+        }
+      }
+    } catch (_) {}
     const DATA_FILE = path.join(__dirname, 'data.json');
     if (fs.existsSync(DATA_FILE)) {
       const jsonData = JSON.parse(fs.readFileSync(DATA_FILE));
@@ -184,6 +193,11 @@ async function initializeDatabase() {
 app.get('/api/problem-statements', async (req, res) => {
   try {
     res.set({ 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+    const includeUnreleased = String(req.query.includeUnreleased || '') === '1';
+    const released = app.locals.problemsReleased === true;
+    if (!released && !includeUnreleased) {
+      return res.json([]);
+    }
     const statements = await db.getAllProblemStatements();
     const formatted = formatProblems(statements).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
     res.json(formatted);
@@ -521,6 +535,28 @@ app.post('/api/admin/login', express.urlencoded({ extended: false }), (req, res)
 app.post('/api/admin/logout', (req, res) => {
   res.setHeader('Set-Cookie', 'admin_auth=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax');
   return res.redirect('/admin-login');
+});
+
+// Release toggle endpoints
+app.get('/api/release-status', async (req, res) => {
+  try {
+    const released = app.locals.problemsReleased === true;
+    res.json({ released });
+  } catch (e) {
+    res.json({ released: false });
+  }
+});
+
+app.post('/api/admin/release', async (req, res) => {
+  try {
+    const released = !!(req.body && (req.body.released === true || req.body.released === 'true' || req.body.released === 1 || req.body.released === '1'));
+    app.locals.problemsReleased = released;
+    try { if (typeof db.setSettings === 'function') await db.setSettings({ problemsReleased: released }); } catch (_) {}
+    try { broadcastUpdate('release', { released }); } catch (_) {}
+    res.json({ ok: true, released });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to set release status' });
+  }
 });
 
 process.on('SIGINT', async () => { await db.close(); process.exit(0); });
