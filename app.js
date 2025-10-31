@@ -398,9 +398,19 @@ app.post('/api/admin/replace-with-data-file', async (req, res) => {
       await db.resetAll();
       await db.importFromJSON(jsonData);
     }
+    // Automatically release problems after replacement so they appear on public page
+    app.locals.problemsReleased = true;
+    try { 
+      if (typeof db.setSettings === 'function') {
+        await db.setSettings({ problemsReleased: true }); 
+      }
+    } catch (err) {
+      console.error('Error setting release status:', err);
+    }
     const registrations = await db.getAllRegistrations();
     const problems = formatProblems(await db.getAllProblemStatements());
     broadcastUpdate('reset', { registrations, problems });
+    try { broadcastUpdate('release', { released: true }); } catch (_) {}
     res.json({ ok: true, importedProblems: problems.length });
   } catch (error) {
     console.error('Error replacing from data file:', error);

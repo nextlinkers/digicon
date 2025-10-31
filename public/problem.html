@@ -1088,9 +1088,15 @@
         try {
           const payload = JSON.parse(event.data);
           if (!payload || !payload.type) return;
-          if (payload.type === 'registration' || payload.type === 'deletion' || payload.type === 'reset') {
+          if (payload.type === 'registration' || payload.type === 'deletion') {
             const problems = await fetchProblems();
             renderProblems(problems);
+          } else if (payload.type === 'reset') {
+            // On reset, re-check release status and reload problems
+            await load();
+          } else if (payload.type === 'release') {
+            // When problems are released, reload the page content
+            await load();
           }
         } catch (_) {}
       };
