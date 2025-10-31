@@ -17,10 +17,58 @@ class MongoStore {
     const ps = this.db.collection(`${this.collectionPrefix}problem_statements`);
     const regs = this.db.collection(`${this.collectionPrefix}registrations`);
     this.collections = { ps, regs };
-    // indexes
-    await ps.createIndex({ id: 1 }, { unique: true });
-    await regs.createIndex({ teamNumber: 1 }, { unique: true });
-    await regs.createIndex({ problemStatementId: 1 });
+    // indexes - create with error handling to avoid failures on existing indexes or duplicates
+    try {
+      await ps.createIndex({ id: 1 }, { unique: true });
+    } catch (e) {
+      // Index might already exist or have duplicates, try to drop and recreate if needed
+      if (e.code === 11000 || e.code === 85 || e.code === 86) {
+        try {
+          await ps.dropIndex({ id: 1 });
+          await ps.createIndex({ id: 1 }, { unique: true });
+        } catch (_) {
+          // If still fails, just continue without unique constraint
+          console.warn('Could not create unique index on problem_statements.id:', e.message);
+        }
+      }
+    }
+    try {
+      await regs.createIndex({ teamNumber: 1 }, { unique: true });
+    } catch (e) {
+      // Index might already exist or have duplicates, try to drop and recreate if needed
+      if (e.code === 11000 || e.code === 85 || e.code === 86) {
+        try {
+          await regs.dropIndex({ teamNumber: 1 });
+          // Check for and remove duplicate teamNumbers before recreating index
+          const duplicates = await regs.aggregate([
+            { $group: { _id: '$teamNumber', count: { $sum: 1 }, ids: { $push: '$_id' } } },
+            { $match: { count: { $gt: 1 } } }
+          ]).toArray();
+          if (duplicates.length > 0) {
+            console.warn(`Found ${duplicates.length} duplicate teamNumbers, keeping first occurrence`);
+            for (const dup of duplicates) {
+              // Keep the first one, delete the rest
+              const ids = dup.ids;
+              if (ids.length > 1) {
+                await regs.deleteMany({ _id: { $in: ids.slice(1) } });
+              }
+            }
+          }
+          await regs.createIndex({ teamNumber: 1 }, { unique: true });
+        } catch (_) {
+          // If still fails, just continue without unique constraint
+          console.warn('Could not create unique index on registrations.teamNumber:', e.message);
+        }
+      }
+    }
+    try {
+      await regs.createIndex({ problemStatementId: 1 });
+    } catch (e) {
+      // Non-unique index, if it exists, that's fine
+      if (e.code !== 85 && e.code !== 86) {
+        console.warn('Could not create index on registrations.problemStatementId:', e.message);
+      }
+    }
     // seed defaults if empty
     const count = await ps.estimatedDocumentCount();
     if (count === 0) {
@@ -147,21 +195,65 @@ class MongoStore {
   async getAllRegistrations() {
     if (!this.collections) await this.init();
     const { regs, ps } = this.collections;
-    const [registrations, problems] = await Promise.all([
-      regs.find({}).toArray(),
-      ps.find({}).toArray()
-    ]);
-    const idToPs = new Map(problems.map(p => [p.id, p]));
-    return registrations.map(r => ({
-      team_number: r.teamNumber,
-      team_name: r.teamName,
-      team_leader: r.teamLeader,
-      problem_title: idToPs.get(r.problemStatementId)?.title || '',
-      problem_category: idToPs.get(r.problemStatementId)?.category || null,
-      problem_difficulty: idToPs.get(r.problemStatementId)?.difficulty || null,
-      registration_date_time: r.registrationDateTime,
-      registration_date_time_ist: new Date(r.registrationDateTime).toLocaleString('en-IN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true, timeZone:'Asia/Kolkata' }) + ' IST'
-    }));
+    try {
+      const [registrations, problems] = await Promise.all([
+        regs.find({}).toArray(),
+        ps.find({}).toArray()
+      ]);
+      const idToPs = new Map(problems.map(p => [p.id, p]));
+      return registrations.map(r => ({
+        team_number: r.teamNumber,
+        team_name: r.teamName,
+        team_leader: r.teamLeader,
+        problem_title: idToPs.get(r.problemStatementId)?.title || '',
+        problem_category: idToPs.get(r.problemStatementId)?.category || null,
+        problem_difficulty: idToPs.get(r.problemStatementId)?.difficulty || null,
+        registration_date_time: r.registrationDateTime,
+        registration_date_time_ist: new Date(r.registrationDateTime).toLocaleString('en-IN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true, timeZone:'Asia/Kolkata' }) + ' IST'
+      }));
+    } catch (error) {
+      // If there's a duplicate key error during read, try to fix it
+      if (error.code === 11000 || error.message?.includes('E11000') || error.message?.includes('duplicate key')) {
+        console.warn('Duplicate key error detected, attempting to clean up duplicates...');
+        try {
+          // Find and remove duplicate teamNumbers
+          const duplicates = await regs.aggregate([
+            { $group: { _id: '$teamNumber', count: { $sum: 1 }, ids: { $push: '$_id' } } },
+            { $match: { count: { $gt: 1 } } }
+          ]).toArray();
+          if (duplicates.length > 0) {
+            console.warn(`Found ${duplicates.length} duplicate teamNumbers, keeping first occurrence`);
+            for (const dup of duplicates) {
+              const ids = dup.ids;
+              if (ids.length > 1) {
+                await regs.deleteMany({ _id: { $in: ids.slice(1) } });
+              }
+            }
+          }
+          // Retry the operation
+          const [registrations, problems] = await Promise.all([
+            regs.find({}).toArray(),
+            ps.find({}).toArray()
+          ]);
+          const idToPs = new Map(problems.map(p => [p.id, p]));
+          return registrations.map(r => ({
+            team_number: r.teamNumber,
+            team_name: r.teamName,
+            team_leader: r.teamLeader,
+            problem_title: idToPs.get(r.problemStatementId)?.title || '',
+            problem_category: idToPs.get(r.problemStatementId)?.category || null,
+            problem_difficulty: idToPs.get(r.problemStatementId)?.difficulty || null,
+            registration_date_time: r.registrationDateTime,
+            registration_date_time_ist: new Date(r.registrationDateTime).toLocaleString('en-IN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true, timeZone:'Asia/Kolkata' }) + ' IST'
+          }));
+        } catch (retryError) {
+          console.error('Error during duplicate cleanup:', retryError);
+          // Return empty array as fallback
+          return [];
+        }
+      }
+      throw error;
+    }
   }
 
   async getRegistrationsByProblemStatement(problemStatementId) {

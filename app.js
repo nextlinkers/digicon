@@ -442,7 +442,24 @@ app.post('/api/admin/limit-one-all', async (req, res) => {
 app.get('/api/registrations', async (req, res) => {
   try {
     res.set({ 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
-    const registrations = await db.getAllRegistrations();
+    let registrations;
+    try {
+      registrations = await db.getAllRegistrations();
+    } catch (error) {
+      // If there's a duplicate key error, try to fix it and retry
+      if (error.code === 11000 || error.message?.includes('E11000') || error.message?.includes('duplicate key')) {
+        console.warn('Duplicate key error in getAllRegistrations, attempting cleanup...');
+        // The getAllRegistrations method should handle this, but if it doesn't, retry once
+        try {
+          registrations = await db.getAllRegistrations();
+        } catch (retryError) {
+          console.error('Error fetching registrations after retry:', retryError);
+          return res.status(500).json({ error: 'Failed to fetch registrations due to database inconsistency. Please contact administrator.' });
+        }
+      } else {
+        throw error;
+      }
+    }
     const enriched = registrations.map(r => {
       const team = teamNumberToTeam.get(String(r.team_number || '').trim());
       return {
