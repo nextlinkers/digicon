@@ -459,8 +459,8 @@
                 if (problemsLoading) problemsLoading.style.display = 'block';
                 if (registrationsLoading) registrationsLoading.style.display = 'block';
                 
-                // Fetch problem statements with timeout
-                const problemsRes = await fetch('/api/problem-statements', {
+                // Fetch problem statements with timeout (admin always sees all problems)
+                const problemsRes = await fetch('/api/problem-statements?includeUnreleased=1', {
                     method: 'GET',
                     headers: {
                         'Cache-Control': 'no-cache',
@@ -674,16 +674,43 @@
         async function replaceFromDataFile() {
             if (!confirm('This will replace current problems with those in data.json and clear registrations. Continue?')) return;
             try {
-                const res = await fetch('/api/admin/replace-with-data-file', { method: 'POST', cache: 'no-store' });
+                // Show loading state
+                document.getElementById('problemsLoading').style.display = 'block';
+                document.getElementById('problemsTable').style.display = 'none';
+                
+                const res = await fetch('/api/admin/replace-with-data-file', { 
+                    method: 'POST', 
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
                 if (!res.ok) {
-                    const err = await res.json();
+                    const err = await res.json().catch(() => ({ error: res.statusText }));
                     alert('Replace failed: ' + (err.error || res.statusText));
+                    document.getElementById('problemsLoading').style.display = 'none';
+                    document.getElementById('problemsTable').style.display = 'block';
                     return;
                 }
-                showNotification('Replaced from data.json');
-                refreshData();
+                
+                const data = await res.json().catch(() => ({}));
+                const importedCount = data.importedProblems || 0;
+                
+                showNotification(`Replaced from data.json - ${importedCount} problem statements loaded`);
+                
+                // Wait a short moment to ensure backend has finished processing
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Force a fresh fetch with cache busting
+                await fetchData();
+                
             } catch (e) {
+                console.error('Replace error:', e);
                 alert('Replace failed: ' + e.message);
+                document.getElementById('problemsLoading').style.display = 'none';
+                document.getElementById('problemsTable').style.display = 'block';
             }
         }
 
