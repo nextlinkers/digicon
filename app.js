@@ -163,9 +163,19 @@ async function initializeDatabase() {
         const settings = await db.getSettings();
         if (settings && typeof settings.problemsReleased === 'boolean') {
           app.locals.problemsReleased = settings.problemsReleased;
+        } else {
+          // Default to true if no setting exists (problems should be visible by default)
+          app.locals.problemsReleased = true;
+          await db.setSettings({ problemsReleased: true });
         }
+      } else {
+        // Default to true if settings function not available
+        app.locals.problemsReleased = true;
       }
-    } catch (_) {}
+    } catch (_) {
+      // Default to true on error
+      app.locals.problemsReleased = true;
+    }
     const DATA_FILE = path.join(__dirname, 'data.json');
     if (fs.existsSync(DATA_FILE)) {
       const jsonData = JSON.parse(fs.readFileSync(DATA_FILE));
@@ -585,10 +595,21 @@ app.post('/api/admin/logout', (req, res) => {
 // Release toggle endpoints
 app.get('/api/release-status', async (req, res) => {
   try {
+    // If not set, default to true (problems should be visible)
+    if (app.locals.problemsReleased === undefined) {
+      app.locals.problemsReleased = true;
+      // Try to persist this default
+      try {
+        if (typeof db.setSettings === 'function') {
+          await db.setSettings({ problemsReleased: true });
+        }
+      } catch (_) {}
+    }
     const released = app.locals.problemsReleased === true;
     res.json({ released });
   } catch (e) {
-    res.json({ released: false });
+    // Default to true on error so problems are visible
+    res.json({ released: true });
   }
 });
 
